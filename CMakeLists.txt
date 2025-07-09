@@ -35,6 +35,7 @@ enable_testing()
 # === Unit tests ===
 add_executable(unit_tests
   tests/DiagnosticsTests.cpp
+  tests/FileExporterTests.cpp
 )
 target_link_libraries(unit_tests
   diagnostics_lib

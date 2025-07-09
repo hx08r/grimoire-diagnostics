@@ -1,22 +1,39 @@
 #include <gtest/gtest.h>
 #include "Diagnostics.hpp"
+#include "Exporter.hpp"
 #include "FileExporter.hpp"
 #include "DiagnosticAggregator.hpp"
+#include <memory>
+#include <sstream>
 
-TEST(DiagnosticsTest, MetadataFieldsSetCorrectly) {
+// Mock Exporter
+class MockExporter : public Exporter {
+public:
+    std::vector<std::string> events;
+
+    void exportEvent(const std::string& serialized) override {
+        events.push_back(serialized);
+    }
+};
+
+TEST(DiagnosticsTest, MetadataIsStored) {
     Diagnostics diag;
-
     Metadata meta;
     meta.file = "file.cpp";
     meta.line = 42;
-    meta.function = "testFunc";
-    meta.correlationId = "abc123";
+    meta.function = "myFunc";
+    meta.tags = {"tag1", "tag2"};
+    meta.correlationId = "corr123";
     meta.timestamp = std::chrono::system_clock::now();
 
     diag.addMetadata(meta);
+    EXPECT_EQ(diag.getParentId(), "");
 
-    // There's no public getter, so maybe check via report + mock.
-    SUCCEED(); // Replace with real checks using a mock exporter.
+    diag.chainTo("parent456");
+    EXPECT_EQ(diag.getParentId(), "parent456");
+
+    diag.setId("diagID");
+    EXPECT_EQ(diag.getId(), "diagID");
 }
 
 TEST(DiagnosticsTest, FileExporterWrites) {
@@ -53,4 +70,47 @@ TEST(DiagnosticAggregatorTest, CanCreateAndChainDiagnostics) {
 
     // Check that child’s parentId is correct
     EXPECT_EQ(child->getParentId(), "parentID");
+}
+
+TEST(DiagnosticsTest, ExporterIsCalled) {
+    auto mockExporter = std::make_shared<MockExporter>();
+    Diagnostics diag;
+    diag.addExporter(mockExporter);
+
+    Metadata meta;
+    meta.file = "main.cpp";
+    meta.line = 10;
+    meta.function = "main";
+    meta.timestamp = std::chrono::system_clock::now();
+    diag.addMetadata(meta);
+
+    diag.reportWarning("This is a warning");
+    diag.reportError("This is an error");
+
+    EXPECT_EQ(mockExporter->events.size(), 2);
+
+    EXPECT_TRUE(mockExporter->events[0].find("WARNING") != std::string::npos);
+    EXPECT_TRUE(mockExporter->events[1].find("ERROR") != std::string::npos);
+}
+
+TEST(DiagnosticsTest, CorrectJSONContent) {
+    auto exporter = std::make_shared<MockExporter>();
+    Diagnostics diag;
+    diag.addExporter(exporter);
+
+    Metadata meta;
+    meta.file = "test.cpp";
+    meta.line = 123;
+    meta.function = "testFunc";
+    meta.tags = {"unit", "test"};
+    meta.timestamp = std::chrono::system_clock::now();
+    diag.addMetadata(meta);
+
+    diag.reportError("Simulated error");
+
+    auto lastEvent = exporter->events.back();
+
+    EXPECT_TRUE(lastEvent.find("\"level\":\"ERROR\"") != std::string::npos);
+    EXPECT_TRUE(lastEvent.find("\"file\":\"test.cpp\"") != std::string::npos);
+    EXPECT_TRUE(lastEvent.find("\"message\":\"Simulated error\"") != std::string::npos);
 }

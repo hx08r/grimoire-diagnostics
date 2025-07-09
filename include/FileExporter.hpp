@@ -13,7 +13,7 @@ public:
      * @brief Constructs a FileExporter that writes to the specified file.
      * @param filename The name of the file to write events to.
      */
-    FileExporter(const std::string& filename);
+    FileExporter(const std::string& filename, bool append = true);
 
     /**
      * @brief Exports a serialized diagnostic event to the file.
