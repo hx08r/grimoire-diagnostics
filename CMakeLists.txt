@@ -11,6 +11,7 @@ add_library(diagnostics_lib STATIC
   src/Diagnostics.cpp
   src/FileExporter.cpp
   src/DiagnosticAggregator.cpp
+  src/CorrelationGraph.cpp
 )
 set_target_properties(diagnostics_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(diagnostics_lib PUBLIC include)
@@ -34,17 +35,17 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 # === Unit tests ===
-add_executable(unit_tests
-  tests/DiagnosticsTests.cpp
-  tests/FileExporterTests.cpp
-)
-target_link_libraries(unit_tests
-  diagnostics_lib
-  gtest
-  gtest_main
-)
+add_executable(DiagnosticsTests tests/DiagnosticsTests.cpp)
+target_link_libraries(DiagnosticsTests diagnostics_lib gtest gtest_main)
+add_test(NAME DiagnosticsTests COMMAND DiagnosticsTests)
 
-add_test(NAME AllTests COMMAND unit_tests)
+add_executable(FileExporterTests tests/FileExporterTests.cpp)
+target_link_libraries(FileExporterTests diagnostics_lib gtest gtest_main)
+add_test(NAME FileExporterTests COMMAND FileExporterTests)
+
+add_executable(CorrelationGraphTests tests/CorrelationGraphTests.cpp)
+target_link_libraries(CorrelationGraphTests diagnostics_lib gtest gtest_main)
+add_test(NAME CorrelationGraphTests COMMAND CorrelationGraphTests)
 
 add_subdirectory(external/pybind11)
 

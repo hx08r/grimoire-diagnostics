@@ -1,10 +1,14 @@
 #include "Diagnostics.hpp"
 #include "Exporter.hpp"
 #include "../include/external/json.hpp"
+#include <random>
+#include <sstream>
 
 using json = nlohmann::json;
 
-Diagnostics::Diagnostics() {}
+Diagnostics::Diagnostics() {
+    generateId();
+}
 
 void Diagnostics::addMetadata(const Metadata& metadata) {
     std::lock_guard<std::mutex> lock(mtx_);
@@ -46,4 +50,28 @@ void Diagnostics::exportEvent(const std::string& level, const std::string& messa
     for (auto& exporter : exporters_) {
         exporter->exportEvent(j.dump());
     }
+}
+
+void Diagnostics::generateId() {
+    id_ = generateUUID();
+}
+
+std::string Diagnostics::generateUUID() const {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_int_distribution<> dis(0, 15);
+
+    std::stringstream ss;
+    ss << std::hex;
+    for (int i = 0; i < 8; ++i) ss << dis(gen);
+    ss << "-";
+    for (int i = 0; i < 4; ++i) ss << dis(gen);
+    ss << "-4"; // UUID v4
+    for (int i = 0; i < 3; ++i) ss << dis(gen);
+    ss << "-";
+    ss << dis(gen) % 4 + 8; // variant
+    for (int i = 0; i < 3; ++i) ss << dis(gen);
+    ss << "-";
+    for (int i = 0; i < 12; ++i) ss << dis(gen);
+    return ss.str();
 }
