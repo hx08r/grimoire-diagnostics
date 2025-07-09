@@ -17,6 +17,14 @@ struct Metadata {
     std::string correlationId;                 ///< Correlation ID for tracing events.
     std::string parentId;                      ///< Parent event ID for chaining.
     std::chrono::system_clock::time_point timestamp; ///< Timestamp of the event.
+    void setTimestampMillis(int64_t millis) {
+        timestamp = std::chrono::system_clock::time_point(std::chrono::milliseconds(millis));
+    }
+
+    int64_t getTimestampMillis() const {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(
+            timestamp.time_since_epoch()).count();
+    }
 };
 
 /**

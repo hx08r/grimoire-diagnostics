@@ -1,40 +1,24 @@
-#include "DiagnosticAggregator.hpp"
+#include "Diagnostics.hpp"
 #include "FileExporter.hpp"
-#include <iostream>
 
 int main() {
-    DiagnosticAggregator manager;
-
-    auto parentDiag = manager.createDiagnostic("parent1");
-    parentDiag->setId("parent1");
-
-    auto childDiag = manager.createDiagnostic("child1");
-    childDiag->setId("child1");
-
-    // Add exporter to parent
-    auto exporter = std::make_shared<FileExporter>("diagnostics_tree.log");
-    parentDiag->addExporter(exporter);
-    childDiag->addExporter(exporter);
+    Diagnostics diag;
 
     Metadata meta;
-    meta.file = __FILE__;
-    meta.line = __LINE__;
-    meta.function = __FUNCTION__;
-    meta.tags = {"tree", "parent"};
-    meta.correlationId = "root123";
+    meta.file = "main.cpp";
+    meta.line = 42;
+    meta.function = "main";
+    meta.tags = {"c++", "test"};
+    meta.correlationId = "cpp123";
     meta.timestamp = std::chrono::system_clock::now();
 
-    parentDiag->addMetadata(meta);
-    parentDiag->reportWarning("Root warning");
+    diag.addMetadata(meta);
 
-    Metadata childMeta = meta;
-    childMeta.tags = {"tree", "child"};
-    childDiag->addMetadata(childMeta);
-    childDiag->reportError("Child error");
+    auto exporter = std::make_shared<FileExporter>("shared_diag.log", true); // append mode
+    diag.addExporter(exporter);
 
-    manager.chainDiagnostics("parent1", "child1");
-
-    manager.exportTree();
+    diag.reportWarning("C++ warning");
+    diag.reportError("C++ error");
 
     return 0;
 }

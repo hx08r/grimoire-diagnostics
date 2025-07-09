@@ -44,3 +44,9 @@ target_link_libraries(unit_tests
 )
 
 add_test(NAME AllTests COMMAND unit_tests)
+
+add_subdirectory(external/pybind11)
+
+pybind11_add_module(grimoire_diag python/bindings.cpp)
+target_link_libraries(grimoire_diag PRIVATE diagnostics_lib)
+
