@@ -3,9 +3,13 @@ import subprocess
 import json
 import os
 import time
+import sys
 
 # Run the C++ app first
-subprocess.run(["../../build/Release/grimoire_diagnostics_cpp.exe"], check=True)
+exe_name = "../../build/grimoire_diagnostics_cpp"
+if sys.platform == "win32":
+    exe_name = "../../build/Release/grimoire_diagnostics_cpp.exe"
+subprocess.run([exe_name], check=True)
 
 # Run Python diagnostics
 meta = grimoire_diag.Metadata()
