@@ -7,11 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(include)
 
 # === Core library ===
-add_library(diagnostics_lib
+add_library(diagnostics_lib STATIC
   src/Diagnostics.cpp
   src/FileExporter.cpp
   src/DiagnosticAggregator.cpp
 )
+set_target_properties(diagnostics_lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(diagnostics_lib PUBLIC include)
 
 # === Main executable ===
