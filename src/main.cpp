@@ -1,25 +1,40 @@
-#include "Diagnostics.h"
-#include "FileExporter.h"
+#include "DiagnosticAggregator.hpp"
+#include "FileExporter.hpp"
 #include <iostream>
 
 int main() {
-    Diagnostics diag;
+    DiagnosticAggregator manager;
 
-    auto exporter = std::make_shared<FileExporter>("diagnostics.log");
-    diag.addExporter(exporter);
+    auto parentDiag = manager.createDiagnostic("parent1");
+    parentDiag->setId("parent1");
+
+    auto childDiag = manager.createDiagnostic("child1");
+    childDiag->setId("child1");
+
+    // Add exporter to parent
+    auto exporter = std::make_shared<FileExporter>("diagnostics_tree.log");
+    parentDiag->addExporter(exporter);
+    childDiag->addExporter(exporter);
 
     Metadata meta;
     meta.file = __FILE__;
     meta.line = __LINE__;
     meta.function = __FUNCTION__;
-    meta.tags = {"example", "test"};
-    meta.correlationId = "1234";
+    meta.tags = {"tree", "parent"};
+    meta.correlationId = "root123";
     meta.timestamp = std::chrono::system_clock::now();
 
-    diag.addMetadata(meta);
-    diag.reportWarning("This is a test warning.");
-    diag.reportError("This is a test error.");
+    parentDiag->addMetadata(meta);
+    parentDiag->reportWarning("Root warning");
 
-    std::cout << "Diagnostics reported. Check diagnostics.log" << std::endl;
+    Metadata childMeta = meta;
+    childMeta.tags = {"tree", "child"};
+    childDiag->addMetadata(childMeta);
+    childDiag->reportError("Child error");
+
+    manager.chainDiagnostics("parent1", "child1");
+
+    manager.exportTree();
+
     return 0;
 }

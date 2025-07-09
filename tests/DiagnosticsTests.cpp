@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
-#include "Diagnostics.h"
-#include "FileExporter.h"
+#include "Diagnostics.hpp"
+#include "FileExporter.hpp"
+#include "DiagnosticAggregator.hpp"
 
 TEST(DiagnosticsTest, MetadataFieldsSetCorrectly) {
     Diagnostics diag;
@@ -26,4 +27,30 @@ TEST(DiagnosticsTest, FileExporterWrites) {
     std::string line;
     std::getline(ifs, line);
     EXPECT_EQ(line, "{\"test\":\"value\"}");
+}
+
+TEST(DiagnosticAggregatorTest, CanCreateAndChainDiagnostics) {
+    DiagnosticAggregator manager;
+
+    // Create parent and child
+    auto parent = manager.createDiagnostic("parentID");
+    parent->setId("parentID");
+    auto child = manager.createDiagnostic("childID");
+    child->setId("childID");
+
+    // Metadata sanity to simulate real use
+    Metadata meta;
+    meta.file = "DiagnosticsTests.cpp";
+    meta.line = __LINE__;
+    meta.function = __FUNCTION__;
+    meta.correlationId = "corr123";
+    meta.timestamp = std::chrono::system_clock::now();
+    parent->addMetadata(meta);
+    child->addMetadata(meta);
+
+    // Chain them
+    manager.chainDiagnostics("parentID", "childID");
+
+    // Check that child’s parentId is correct
+    EXPECT_EQ(child->getParentId(), "parentID");
 }

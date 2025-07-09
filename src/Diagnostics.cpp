@@ -1,6 +1,6 @@
-#include "Diagnostics.h"
-#include "Exporter.h"
-#include <json.hpp>
+#include "Diagnostics.hpp"
+#include "Exporter.hpp"
+#include "../include/external/json.hpp"
 
 using json = nlohmann::json;
 

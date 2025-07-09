@@ -10,6 +10,7 @@ include_directories(include)
 add_library(diagnostics_lib
   src/Diagnostics.cpp
   src/FileExporter.cpp
+  src/DiagnosticAggregator.cpp
 )
 target_include_directories(diagnostics_lib PUBLIC include)
 
