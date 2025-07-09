@@ -52,7 +52,7 @@ pybind11_add_module(grimoire_diag python/bindings.cpp)
 target_link_libraries(grimoire_diag PRIVATE diagnostics_lib)
 
 add_custom_command(TARGET grimoire_diag POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:grimoire_diag> ${CMAKE_SOURCE_DIR}/python/
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:grimoire_diag> ${CMAKE_SOURCE_DIR}/python/test
 )
 
 
