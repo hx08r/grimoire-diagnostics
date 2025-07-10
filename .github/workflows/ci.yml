@@ -42,5 +42,5 @@ jobs:
       - name: Run Python bindings tests
         working-directory: bindings/python
         run: |
-          export PYTHONPATH=$PWD:$PYTHONPATH
-          pytest test/
+          python -c "import grimoire_diag; print(grimoire_diag.__file__)"
+          pytest --pyargs grimoire_diag
