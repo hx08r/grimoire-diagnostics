@@ -92,6 +92,8 @@ public:
      */
     std::string getParentId() const { return metadata_.parentId; }
 
+    void generateId();
+
 private:
     Metadata metadata_;                                ///< Metadata for the current diagnostics context.
     std::vector<std::shared_ptr<Exporter>> exporters_; ///< List of exporters for diagnostic events.
@@ -104,4 +106,5 @@ private:
      * @param message The event message.
      */
     void exportEvent(const std::string& level, const std::string& message);
+    std::string generateUUID() const;
 };
