@@ -41,4 +41,6 @@ jobs:
 
       - name: Run Python bindings tests
         working-directory: bindings/python
-        run: pytest test/
+        run: |
+          export PYTHONPATH=$PWD:$PYTHONPATH
+          pytest test/
