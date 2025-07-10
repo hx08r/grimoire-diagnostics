@@ -39,11 +39,6 @@ jobs:
         working-directory: bindings/python
         run: pip install .
 
-      - name: Verify install path
-        run: |
-          python -m site
-          python -c "import grimoire_diag; print(grimoire_diag.__file__)"
-
       - name: Run Python bindings tests
         working-directory: bindings/python
         run: pytest test/
