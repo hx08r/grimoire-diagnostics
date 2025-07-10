@@ -2,6 +2,11 @@
 # Grimoire Core Library — CMakeLists.txt (grouped)
 # ==================================================
 
+cmake_minimum_required(VERSION 3.14)
+
+project(grimoire_core LANGUAGES CXX)
+
+
 # Gather all header and source files
 file(GLOB_RECURSE CORE_HEADERS include/grimoire/*.hpp)
 file(GLOB_RECURSE CORE_SOURCES src/*.cpp)
@@ -23,6 +28,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(googletest)
 
