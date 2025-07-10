@@ -3,19 +3,20 @@
 # ==================================================
 
 cmake_minimum_required(VERSION 3.14)
-
 project(grimoire_core LANGUAGES CXX)
 
-
-# Gather all header and source files
 file(GLOB_RECURSE CORE_HEADERS include/grimoire/*.hpp)
 file(GLOB_RECURSE CORE_SOURCES src/*.cpp)
 
-# Create core library target
-add_library(grimoire_core ${CORE_HEADERS} ${CORE_SOURCES})
+# Remove any driver files
+list(REMOVE_ITEM CORE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
-# Include directories
+add_library(grimoire_core ${CORE_HEADERS} ${CORE_SOURCES})
 target_include_directories(grimoire_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set_target_properties(grimoire_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+add_executable(grimoire_demo src/main.cpp)
+target_link_libraries(grimoire_demo PRIVATE grimoire_core)
 
 # ========================
 # GoogleTest setup
@@ -24,6 +25,9 @@ include(FetchContent)
 
 # Fix MSVC runtime mismatch!
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+
+
 
 FetchContent_Declare(
   googletest
