@@ -1,7 +1,14 @@
-# Python bindings with pybind11
-pybind11_add_module(grimoire_diag bindings.cpp)
-target_link_libraries(grimoire_diag PRIVATE grimoire_core)
-target_include_directories(grimoire_diag PRIVATE ${CMAKE_SOURCE_DIR}/core/include)
+cmake_minimum_required(VERSION 3.14)
 
-# This ensures the output path aligns with cmake_install_dir
-set_target_properties(grimoire_diag PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/grimoire_diag)
+project(grimoire_diag LANGUAGES CXX)
+
+# Make sure pybind11 is found if vendored
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../external/pybind11 external/pybind11)
+
+# Build the Python extension module
+pybind11_add_module(grimoire_diag bindings.cpp)
+
+# Link core library if needed
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../core core)
+target_link_libraries(grimoire_diag PRIVATE grimoire_core)
+target_include_directories(grimoire_diag PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../core/include)
