@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "Diagnostics.hpp"
-#include "Exporter.hpp"
-#include "FileExporter.hpp"
-#include "DiagnosticAggregator.hpp"
+#include <grimoire/Diagnostics.hpp>
+#include <grimoire/Exporter.hpp>
+#include <grimoire/FileExporter.hpp>
+#include <grimoire/DiagnosticAggregator.hpp>
 #include <memory>
 #include <sstream>
 

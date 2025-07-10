@@ -1,5 +1,5 @@
-#include "Diagnostics.hpp"
-#include "FileExporter.hpp"
+#include <grimoire/Diagnostics.hpp>
+#include <grimoire/FileExporter.hpp>
 
 int main() {
     Diagnostics diag;

@@ -1,42 +1,44 @@
-name: Build & Test
+name: Build and Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository with submodules
+        uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake g++
-
-      - name: Build C++ and bindings
+      - name: Install build tools
         run: |
-          mkdir build
-          cd build
-          cmake ..
-          cmake --build . --config Release
+          python -m pip install --upgrade pip
+          pip install scikit-build cmake pybind11 pytest
 
-      - name: Run C++ Unit Tests
-        run: |
-          cd build
-          ctest --output-on-failure
+      - name: Configure C++ core library
+        run: cmake -S core -B build/core -DCMAKE_BUILD_TYPE=Debug
 
-      - name: Run Python Tests
-        run: |
-          cd python/test
-          python test_diag.py
-          python test_shared_log.py
+      - name: Build C++ core library
+        run: cmake --build build/core --config Debug
+
+      - name: Run C++ unit tests
+        run: ctest --test-dir build/core --output-on-failure --verbose -C Debug
+
+      - name: Build and install Python bindings
+        working-directory: bindings/python
+        run: pip install .
+
+      - name: Run Python bindings tests
+        working-directory: bindings/python
+        run: pytest test/

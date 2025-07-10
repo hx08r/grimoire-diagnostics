@@ -1,6 +1,6 @@
-#include "Diagnostics.hpp"
-#include "Exporter.hpp"
-#include "../include/external/json.hpp"
+#include <grimoire/Diagnostics.hpp>
+#include <grimoire/Exporter.hpp>
+#include <grimoire/external/json.hpp>
 #include <random>
 #include <sstream>
 

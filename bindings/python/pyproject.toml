@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools>=42", "scikit-build", "cmake", "pybind11"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grimoire_diag"
+version = "0.1.0"
+description = "Universal Diagnostics Spine — Python bindings"
+requires-python = ">=3.7"

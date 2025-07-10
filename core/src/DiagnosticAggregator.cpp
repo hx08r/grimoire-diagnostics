@@ -1,5 +1,5 @@
-#include "DiagnosticAggregator.hpp"
-#include "Exporter.hpp"
+#include <grimoire/DiagnosticAggregator.hpp>
+#include <grimoire/Exporter.hpp>
 #include <iostream>
 
 DiagnosticAggregator::DiagnosticAggregator() {}

@@ -1,8 +1,8 @@
 // bindings.cpp
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "../include/Diagnostics.hpp"
-#include "../include/FileExporter.hpp"
+#include <grimoire/Diagnostics.hpp>
+#include <grimoire/FileExporter.hpp>
 
 namespace py = pybind11;
 
