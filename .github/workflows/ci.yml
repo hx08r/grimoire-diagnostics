@@ -38,7 +38,7 @@ jobs:
         run: cmake --build build/core --config Release
 
       - name: Build C++ CLI binary
-        run: cmake --build build/core --target grimoire_diagnostics_cpp --config Release
+        run: cmake --build build/core --target grimoire_demo --config Release
 
       - name: Build Python bindings
         run: cmake --build build/python --config Release
