@@ -1,4 +1,4 @@
-# Universal Diagnostics Spine (Codename: Spine, CoreDiag, Pulse, Healer)
+# Universal Diagnostics Spine (Codename: Grimoire)
 
 ## Vision
 
