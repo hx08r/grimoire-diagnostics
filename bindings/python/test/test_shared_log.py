@@ -6,9 +6,9 @@ import time
 import sys
 
 # Run the C++ app first
-exe_name = "../../build/grimoire_demo"
+exe_name = "../../build/core/grimoire_demo"
 if sys.platform == "win32":
-    exe_name = "../../build/Release/grimoire_demo.exe"
+    exe_name = "../../build/core/grimoire_demo.exe"
 subprocess.run([exe_name], check=True)
 
 # Run Python diagnostics
