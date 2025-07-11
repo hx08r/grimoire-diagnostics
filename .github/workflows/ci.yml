@@ -21,9 +21,14 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install build tools
+      - name: Install system dependencies
         run: |
-          python -m pip install --upgrade pip
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+
+      - name: Install Python build tools
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
           pip install scikit-build cmake pybind11 pytest
 
       - name: Configure C++ core library
@@ -35,10 +40,16 @@ jobs:
       - name: Run C++ unit tests
         run: ctest --test-dir build/core --output-on-failure --verbose -C Debug
 
-      - name: Build and install Python bindings
+      - name: Build and install Python bindings in development mode
         working-directory: bindings/python
-        run: pip install .
+        run: |
+          pip install -e . -v
+          
+      - name: Verify installation
+        run: |
+          python -c "import grimoire_diag; print('grimoire_diag module found')"
+          pip list | grep grimoire
 
       - name: Run Python bindings tests
         working-directory: bindings/python
-        run: pytest test/
+        run: pytest test/ -v --tb=short
