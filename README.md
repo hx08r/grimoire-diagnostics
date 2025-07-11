@@ -1,75 +1,52 @@
-# Grimoire Diagnostics
+# Universal Diagnostics Spine (Codename: Spine, CoreDiag, Pulse, Healer)
 
-This project provides a portable, modular diagnostics library with language bindings for Python and other ecosystems.
+## Vision
 
-## Clone with Submodules
+A universal, polyglot diagnostics library that works seamlessly across C++, Python, Java, and more — giving developers a consistent API to add rich, structured diagnostics, auto-correlate issues, pinpoint root causes, and evolve to automatic error recovery and self-healing.
 
-Clone this repository with its submodules:
+## Features
 
-```
-git clone --recurse-submodules https://github.com/your/repo.git
-```
+* **Portable C++ Core** — Performance + portability.
+* **Language Bindings** — Python (pybind11), Java (JNI), Node.js (N-API).
+* **Consistent API** — Same `Diagnostics` class with `addMetadata()`, `reportWarning()`, `reportError()`.
+* **Pluggable Exporters** — Log, file, JSON, cloud endpoints.
+* **Correlation Engine** — Root cause tree builder (future).
+* **Auto-Resolver Hooks** — User-defined actions for known issues.
 
-If you forget, run:
+## Quick Start
 
-```
-git submodule update --init --recursive
-```
+### Build (C++)
 
-## Build Instructions
-
-1. Create a build directory:
-
-```
-mkdir build
-cd build
-```
-
-2. Configure and build with CMake:
-
-```
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-cmake --build . --config Debug
+```bash
+mkdir build && cd build
+cmake ..
+make
+./example
 ```
 
-3. Run C++ unit tests:
+### Install (Python)
 
-```
-ctest --verbose -C Debug
-```
-
-4. Build and test Python bindings:
-
-```
-cd bindings/python
+```bash
 pip install .
-pytest test/
+python examples/example.py
 ```
 
-## Build Options
+## How it Works
 
-- To build the core library as a shared library:
+```
+[C++ Diagnostics Core] → [Exporter Interfaces] → [Bindings: pybind11, JNI, N-API] → [User Code]
+```
 
-  ```
-  cmake .. -DBUILD_SHARED_LIBS=ON
-  ```
+## Contributing
 
-- To disable building tests:
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-  ```
-  cmake .. -DBUILD_TESTING=OFF
-  ```
+## License
 
-- For faster incremental builds, use Ninja:
+Apache License 2.0 — see [LICENSE](LICENSE).
 
-  ```
-  cmake .. -G Ninja
-  ```
+## Build Status
 
-## Project Structure
+---
 
-- `core/` — C++ core library.
-- `bindings/python/` — Python bindings.
-- `external/pybind11/` — vendored pybind11 submodule.
-- `tests/` — C++ unit tests.
-- `.github/workflows/` — CI configuration.
+**Grimoire Diagnostics** — The universal spine for semantic runtime intelligence.
