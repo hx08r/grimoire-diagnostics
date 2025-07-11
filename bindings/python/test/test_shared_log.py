@@ -6,9 +6,15 @@ import time
 import sys
 
 # Run the C++ app first
-exe_name = "../../build/core/grimoire_demo"
+# Find the absolute repo root
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+
+# Correct path to the binary in build/core
+exe_name = os.path.join(repo_root, "build/core/grimoire_demo")
 if sys.platform == "win32":
-    exe_name = "../../build/core/grimoire_demo.exe"
+    exe_name += ".exe"
+
+print(f"Running executable: {exe_name}")
 subprocess.run([exe_name], check=True)
 
 # Run Python diagnostics
