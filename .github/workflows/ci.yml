@@ -21,33 +21,30 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
 
       - name: Install Python tools
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+          pip install scikit-build cmake pybind11 pytest
 
-      - name: Configure C++ core library
-        run: cmake -S core -B build/core -DCMAKE_BUILD_TYPE=Release
+      - name: Configure C++ core + bindings
+        run: |
+          cmake -S core -B build/core -DCMAKE_BUILD_TYPE=Release
+          cmake -S bindings/python -B build/python -DCMAKE_BUILD_TYPE=Release
 
-      - name: Build C++ core library
+      - name: Build core lib and tests
         run: cmake --build build/core --config Release
 
-      - name: Run C++ unit tests
-        run: ctest --test-dir build/core --output-on-failure --verbose -C Release
-
-      - name: Configure Python bindings
-        run: cmake -S bindings/python -B build/python -DCMAKE_BUILD_TYPE=Release
+      - name: Build C++ CLI binary
+        run: cmake --build build/core --target grimoire_diagnostics_cpp --config Release
 
       - name: Build Python bindings
         run: cmake --build build/python --config Release
 
-      - name: List built Python extension
-        run: find build/python
+      - name: Run C++ tests
+        run: ctest --test-dir build/core --output-on-failure --verbose -C Release
 
       - name: Run Python bindings tests
         run: |
