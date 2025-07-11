@@ -40,15 +40,17 @@ jobs:
       - name: Run C++ unit tests
         run: ctest --test-dir build/core --output-on-failure --verbose -C Debug
 
-      - name: Build and install Python bindings in development mode
+      - name: Build and install Python bindings (wheel)
         working-directory: bindings/python
+        run: pip install . -v
+
+      - name: Verify Python module location
         run: |
-          pip install -e . -v
-          
-      - name: Verify installation
-        run: |
-          python -c "import grimoire_diag; print('grimoire_diag module found')"
-          pip list | grep grimoire
+          python -m site
+          find $(python -c "import site; print(site.getsitepackages()[0])") | grep grimoire
+
+      - name: Verify import works
+        run: python -c "import grimoire_diag; print('grimoire_diag module found')"
 
       - name: Run Python bindings tests
         working-directory: bindings/python
