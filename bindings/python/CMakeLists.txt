@@ -13,6 +13,7 @@ endif()
 pybind11_add_module(grimoire_diag bindings.cpp)
 target_link_libraries(grimoire_diag PRIVATE grimoire_core)
 target_include_directories(grimoire_diag PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../core/include)
-# Ensure install dir matches setup.py
-install(TARGETS grimoire_diag DESTINATION grimoire_diag)
+
+set_target_properties(grimoire_diag PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+install(TARGETS grimoire_diag LIBRARY DESTINATION grimoire_diag)
 
