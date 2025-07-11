@@ -1,42 +1,52 @@
-name: Build & Test
+name: Build and Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository with submodules
+        uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake g++
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
 
-      - name: Build C++ and bindings
+      - name: Install Python tools
         run: |
-          mkdir build
-          cd build
-          cmake ..
-          cmake --build . --config Release
+          python -m pip install --upgrade pip
+          pip install scikit-build cmake pybind11 pytest
 
-      - name: Run C++ Unit Tests
+      - name: Configure C++ core + bindings
         run: |
-          cd build
-          ctest --output-on-failure
+          cmake -S core -B build/core -DCMAKE_BUILD_TYPE=Release
+          cmake -S bindings/python -B build/python -DCMAKE_BUILD_TYPE=Release
 
-      - name: Run Python Tests
+      - name: Build core lib and tests
+        run: cmake --build build/core --config Release
+
+      - name: Build C++ CLI binary
+        run: cmake --build build/core --target grimoire_demo --config Release
+
+      - name: Build Python bindings
+        run: cmake --build build/python --config Release
+
+      - name: Run C++ tests
+        run: ctest --test-dir build/core --output-on-failure --verbose -C Release
+
+      - name: Run Python bindings tests
         run: |
-          cd python/test
-          python test_diag.py
-          python test_shared_log.py
+          export PYTHONPATH=$PWD/build/python
+          pytest bindings/python/test/ -v --tb=short

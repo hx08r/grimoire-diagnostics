@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/FileExporter.hpp"
+#include <grimoire/FileExporter.hpp>
 #include <fstream>
 
 TEST(FileExporterTest, WritesToFile) {

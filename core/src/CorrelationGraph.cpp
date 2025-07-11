@@ -1,4 +1,4 @@
-#include "CorrelationGraph.hpp"
+#include <grimoire/CorrelationGraph.hpp>
 #include <stdexcept>
 
 void CorrelationGraph::addNode(const std::shared_ptr<Diagnostics>& diag) {

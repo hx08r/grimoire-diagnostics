@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "CorrelationGraph.hpp"
-#include "Diagnostics.hpp"
+#include <grimoire/CorrelationGraph.hpp>
+#include <grimoire/Diagnostics.hpp>
 
 TEST(CorrelationGraphTests, RootCauseIsCorrect) {
     auto root = std::make_shared<Diagnostics>();
